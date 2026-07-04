@@ -1,0 +1,224 @@
+ index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h1>Language Learning App</h1>
+
+<select id="category" onchange="loadLesson()">
+    <option value="vocabulary">Vocabulary</option>
+    <option value="grammar">Grammar</option>
+</select>
+
+<div class="card">
+    <h2 id="word"></h2>
+    <p id="translation" class="hidden"></p>
+    <p id="pronunciation"></p>
+
+    <button onclick="showTranslation()">Show Translation</button>
+</div>
+
+<div>
+    <button onclick="previousLesson()">Previous</button>
+    <button onclick="nextLesson()">Next</button>
+</div>
+
+<hr>
+
+<h2>Practice Quiz</h2>
+
+<p id="question"></p>
+
+<input type="text" id="answer">
+
+<br><br>
+
+<button onclick="checkAnswer()">Submit</button>
+
+<p id="result"></p>
+
+<p>Score : <span id="score">0</span></p>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+style.css
+body{
+    font-family:Arial;
+    background:#f2f2f2;
+}
+
+.container{
+    width:500px;
+    margin:40px auto;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 0 10px gray;
+}
+
+.card{
+    border:1px solid #ddd;
+    padding:20px;
+    margin:20px;
+    border-radius:8px;
+}
+
+button{
+    padding:10px 20px;
+    margin:10px;
+    cursor:pointer;
+}
+
+input{
+    padding:10px;
+    width:250px;
+}
+
+.hidden{
+    display:none;
+}
+script.js
+const vocabulary = [
+{
+word:"Hello",
+translation:"Hola",
+pronunciation:"ho-la"
+},
+{
+word:"Thank You",
+translation:"Gracias",
+pronunciation:"gra-see-as"
+},
+{
+word:"Good Morning",
+translation:"Buenos Días",
+pronunciation:"bway-nos dee-as"
+}
+];
+
+const grammar = [
+{
+word:"I am",
+translation:"Yo soy",
+pronunciation:"yo soy"
+},
+{
+word:"You are",
+translation:"Tú eres",
+pronunciation:"too air-es"
+},
+{
+word:"We are",
+translation:"Nosotros somos",
+pronunciation:"no-so-tros so-mos"
+}
+];
+
+let lessons = vocabulary;
+
+let index = 0;
+
+let score = localStorage.getItem("score") || 0;
+
+document.getElementById("score").innerText = score;
+
+function loadLesson(){
+
+let category=document.getElementById("category").value;
+
+if(category=="vocabulary")
+lessons=vocabulary;
+else
+lessons=grammar;
+
+index=0;
+
+displayLesson();
+
+}
+
+function displayLesson(){
+
+document.getElementById("word").innerText=lessons[index].word;
+
+document.getElementById("translation").innerText=
+lessons[index].translation;
+
+document.getElementById("pronunciation").innerText=
+"Pronunciation : "+lessons[index].pronunciation;
+
+document.getElementById("translation").classList.add("hidden");
+
+document.getElementById("question").innerText=
+"What is the translation of '"+lessons[index].word+"' ?";
+
+}
+
+function showTranslation(){
+
+document.getElementById("translation").classList.remove("hidden");
+
+}
+
+function nextLesson(){
+
+index++;
+
+if(index>=lessons.length)
+index=0;
+
+displayLesson();
+
+}
+
+function previousLesson(){
+
+index--;
+
+if(index<0)
+index=lessons.length-1;
+
+displayLesson();
+
+}
+
+function checkAnswer(){
+
+let ans=document.getElementById("answer").value;
+
+if(ans.toLowerCase()==lessons[index].translation.toLowerCase()){
+
+score++;
+
+localStorage.setItem("score",score);
+
+document.getElementById("result").innerHTML="Correct";
+
+}
+else{
+
+document.getElementById("result").innerHTML=
+"Wrong! Correct Answer : "+lessons[index].translation;
+
+}
+
+document.getElementById("score").innerHTML=score;
+
+document.getElementById("answer").value="";
+
+}
+
+displayLesson();

@@ -1,0 +1,197 @@
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Quiz App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Flashcard Quiz App</h1>
+
+    <div class="card">
+        <h2 id="question"></h2>
+        <p id="answer" class="hidden"></p>
+
+        <button onclick="showAnswer()">Show Answer</button>
+    </div>
+
+    <div class="navigation">
+        <button onclick="previousCard()">Previous</button>
+        <button onclick="nextCard()">Next</button>
+    </div>
+
+    <hr>
+
+    <h3>Add / Edit Flashcard</h3>
+
+    <input type="text" id="questionInput" placeholder="Enter Question">
+    <input type="text" id="answerInput" placeholder="Enter Answer">
+
+    <button onclick="saveCard()">Save</button>
+    <button onclick="editCard()">Edit Current</button>
+    <button onclick="deleteCard()">Delete Current</button>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+style.css
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+}
+
+.container{
+    width:450px;
+    margin:40px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.card{
+    border:1px solid #ddd;
+    padding:20px;
+    border-radius:8px;
+    margin-bottom:20px;
+}
+
+button{
+    padding:10px 20px;
+    margin:8px;
+    cursor:pointer;
+}
+
+input{
+    width:90%;
+    padding:10px;
+    margin:8px;
+}
+
+.hidden{
+    display:none;
+}
+
+#answer{
+    color:green;
+    font-weight:bold;
+}
+script.js
+let flashcards = [
+    {
+        question: "What is HTML?",
+        answer: "HTML stands for HyperText Markup Language."
+    },
+    {
+        question: "What is CSS?",
+        answer: "CSS is used for styling web pages."
+    },
+    {
+        question: "What is JavaScript?",
+        answer: "JavaScript adds interactivity to web pages."
+    }
+];
+
+let currentIndex = 0;
+
+function displayCard(){
+
+    document.getElementById("question").innerText =
+        flashcards[currentIndex].question;
+
+    document.getElementById("answer").innerText =
+        flashcards[currentIndex].answer;
+
+    document.getElementById("answer").classList.add("hidden");
+}
+
+function showAnswer(){
+    document.getElementById("answer").classList.remove("hidden");
+}
+
+function nextCard(){
+
+    if(currentIndex < flashcards.length-1){
+        currentIndex++;
+    }
+    else{
+        currentIndex=0;
+    }
+
+    displayCard();
+}
+
+function previousCard(){
+
+    if(currentIndex>0){
+        currentIndex--;
+    }
+    else{
+        currentIndex=flashcards.length-1;
+    }
+
+    displayCard();
+}
+
+function saveCard(){
+
+    let q=document.getElementById("questionInput").value;
+    let a=document.getElementById("answerInput").value;
+
+    if(q=="" || a==""){
+        alert("Enter Question and Answer");
+        return;
+    }
+
+    flashcards.push({
+        question:q,
+        answer:a
+    });
+
+    document.getElementById("questionInput").value="";
+    document.getElementById("answerInput").value="";
+
+    alert("Flashcard Added");
+}
+
+function editCard(){
+
+    let q=document.getElementById("questionInput").value;
+    let a=document.getElementById("answerInput").value;
+
+    if(q!="" && a!=""){
+        flashcards[currentIndex].question=q;
+        flashcards[currentIndex].answer=a;
+
+        displayCard();
+
+        alert("Flashcard Updated");
+    }
+}
+
+function deleteCard(){
+
+    if(flashcards.length==1){
+        alert("Cannot delete last flashcard");
+        return;
+    }
+
+    flashcards.splice(currentIndex,1);
+
+    if(currentIndex>=flashcards.length){
+        currentIndex=flashcards.length-1;
+    }
+
+    displayCard();
+
+    alert("Flashcard Deleted");
+}
+
+displayCard();
